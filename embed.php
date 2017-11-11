@@ -4,7 +4,7 @@ header('Pragma: no-cache'); // HTTP 1.0.
 header('Expires: 0'); // Proxies.
 header( 'X-Frame-Options: SAMEORIGIN' );
 $driver = $_GET['id'];
-$driver = preg_match('/([\w-_]{28})/',$driver,$driver)?$driver[1]:null;
+$driver = splitid_gid($driver);
 $e = time() + 14000;
 $md5 = md5($driver);
 $md52 = md5($e);
@@ -52,7 +52,7 @@ parse_str($data,$data);
 		}
 			 $sources = str_replace("|" ,"<file>" , $sources); 
  
-			$sources = preg_replace('@<file>https://(.*)@si','<file>https://$1&apps=animedoodee.com</file>',$sources);
+			$sources = preg_replace('@<file>https://(.*)@si','<file>https://$1&apps=akaplayer.com</file>',$sources);
 			$sources = str_replace("c.drive.google.com" ,"googlevideo.com" , $sources); 
  	ob_start();
 print_r($sources, false);
@@ -83,7 +83,21 @@ $sort2 = $parts2[1];
 
  
 
-
+function splitid_gid($url){
+        if(preg_match("/file\/d\/([0-9a-zA-Z-_]+)\//", $url)){
+          preg_match("/file\/d\/([0-9a-zA-Z-_]+)\//", $url, $mach);
+          $docid = $mach[1];
+        }else if(preg_match("/file\/d\/([0-9a-zA-Z-_]+)/", $url)){
+          preg_match("/file\/d\/([0-9a-zA-Z-_]+)/", $url, $mach);
+          $docid = $mach[1];
+        }else if(preg_match("/id=([0-9a-zA-Z-_]+)/", $url)){
+            preg_match("/id=([0-9a-zA-Z-_]+)/", $url, $mach);
+            $docid = $mach[1];
+        }else{
+          $docid = $url;
+        }
+        return $docid;
+  }
  
 
 include("servers.php");
@@ -98,33 +112,55 @@ $enc = base64_encode(openssl_encrypt($drvid,$encrypt_method, $key, 0, $iv));
 <!DOCTYPE html>
 <html>
 <head>
-<title>Google Drive Player - AnimeDooDee.CoM</title>
-<meta name="robots" content="noindex">
-<link rel="shortcut icon" href="//animedoodee.com/api/assets/images/favicon.png" type="image/x-icon" />
-<script type="text/javascript" src="//animedoodee.com/api/assets/js/jquery.min.js"></script>
-<script data-cfasync="false" type="text/javascript" src="//animedoodee.com/api/assets/jwplayer/jwplayer.js"></script>
-<style type="text/css">html,body{padding:0;margin:0;height:100%}#animedoodee-player{width:100%!important;height:100%!important;overflow:hidden;position:absolute;}.animedoodee-container{position:relative;width:100%;height:0;padding-bottom:56.25%;background-color:#000;}.animedoodee-video{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;}.animedoodee-frame{position:absolute;height:50px;right:8px;margin-top:8px;width:50px;z-index:1;background-repeat:no-repeat;background-size:50px 50px;}.jw-menu,.jw-time-tip{padding:.5em!important}</style>
+<title></title>
+<META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+<meta name="referrer" content="always">
+<meta name="referrer" content="no-referrer"/>
+<meta name="referrer" content="never"/>   
+<style type="text/css">body,html{padding:0px;margin:0px;background:#000000;}</style>
+<script data-cfasync="false" type="text/javascript" src="https://cdn.jsdelivr.net/jwplayer/7.1.4/jwplayer.js"></script>
+ 
+<style>
+
+.jwplayer.jw-state-error .jw-icon-display::before {
+content: "\e601" !important;
+}
+
+
+.jwplayer.jw-state-error .jw-title .jw-title-primary {
+    white-space: normal;
+    display: none !important; 
+}
+</style>
 </head>
 <body>
 
 <div itemscope itemtype="http://schema.org/VideoObject">
                 <meta itemprop="name" content="(DUB) " />
-<div id="animedoodee-player"></div>
-
-<script type="text/javascript">jwplayer.key="w51hNXyL+ilJTlNDYNetRp9M/zfZCk/MH1sYlg==";</script>
+<div id="my"></div>
+ 
 <script type="text/javascript">
-					var player = jwplayer("animedoodee-player");
-					player.setup({
-					controls: "true",
-					skin: {
-					name: "tube",
-					active: "#20b4cc",
-					inactive: "#21a7ae"
-						},
-				
-						abouttext: "AnimeDooDee.CoM",
-						aboutlink: "https://animedoodee.com/",
-						sources: [
+jwplayer.defaults = {
+  aspectratio: "16:9",
+  autostart: false,
+  controls: true,
+  displaydescription: false,
+  displaytitle: true,
+ 
+  
+  height: 260, 
+  mute: false,
+  primary: "html5",
+  repeat: false,
+  skin: {"active": "#1c51d9", "inactive": "#b51818", "name": "bekle", "background": "#c2c2c2"},
+  stagevideo: false,
+  stretching: "uniform",
+  width: "100%"
+};
+var playerInstance = jwplayer("my");
+playerInstance.setup({
+ 
+ sources: [
  
 <?php
 $i = 0;
@@ -138,38 +174,35 @@ $sub = preg_replace('@https://(.*).com/videoplayback@si',"$1",$links3[$i -1]);
 $links3[$i -1] = preg_replace('@&ip=(.+?)&@si',"&ip=$1&ck=$cookiz[0]&dom=$domain&",$links3[$i -1]);
 $links3[$i -1] = preg_replace('@&driveid=(.+?)&@si',"&driveid=$enc&api=$cookiz[0]&",$links3[$i -1]);
 ?>
-{file: "<?php echo $proxy; ?><?php echo $links3[$i -1]; ?><?php $denc = base64_encode($links3[$i -1]); $denc = str_replace("-", "/", $denc); $denc = str_replace("+", "_", $denc); ?>",label: "<?php echo $links2[$i -1]; ?>p",type: "mp4"<?php if($links2[$i -1] == "360") { ?>,"default": "true"<?php } ?>},
+
+ {
+        file: "<?php echo $proxy; ?><?php echo $links3[$i -1]; ?><?php $denc = base64_encode($links3[$i -1]); $denc = str_replace("-", "/", $denc); $denc = str_replace("+", "_", $denc); ?>",
+        label: "<?php echo $links2[$i -1]; ?>p",
+provider: "http",
+        type: "mp4"<?php if($links2[$i -1] == "360") { ?>,
+	"default": "true"
+	<?php } ?>
+      },
 <?php
 } 
 ?> 
+
+
 ],
 
  
+});
+ 
+document.cookie = "<?php echo $md52; ?>=<?php echo $md5; ?>; expires=Thu, 18 Dec 37 12:00:00 UTC; path=/"; 
+ 
+playerInstance.on('error' , function(){
+ 
+ // put failsafe here
+}); 
 
-						aspectratio: "16:9",
-						startparam: "start",
-						primary: "html5",
-						preload: "auto",
-						image: "",
-					    
-					    
-					});
-					player.on("error" , function(){
-					});
-					player.addButton(
-  //This portion is what designates the graphic used for the button
-  "//i.imgur.com/EjPniCq.png",
-  //This portion determines the text that appears as a tooltip
-  "Download ", 
-  //This portion designates the functionality of the button itself
-  function() {
-    //With the below code, we're grabbing the file that's currently playing
-    window.location.href = player.getPlaylistItem()['file'];
-  },
-  //And finally, here we set the unique ID of the button itself.
-  "download"
-);
-				</script>;
+ 
+ 
+</script>
 </div>
 </body>
 </html>
