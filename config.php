@@ -7,4 +7,4 @@ $dt = base64_decode($expire);
 		$secret_iv = 'PWAsrqWUN*()!#RETyAAga';
 		$key = hash('sha256', $secret_key);
 		$iv = substr(hash('sha256', $secret_iv), 0, 16);
-?>
+?> 
