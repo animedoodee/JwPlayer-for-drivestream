@@ -52,7 +52,7 @@ parse_str($data,$data);
 		}
 			 $sources = str_replace("|" ,"<file>" , $sources); 
  
-			$sources = preg_replace('@<file>https://(.*)@si','<file>https://$1&apps=akaplayer.com</file>',$sources);
+			$sources = preg_replace('@<file>https://(.*)@si','<file>https://$1&apps=webdrive</file>',$sources);
 			$sources = str_replace("c.drive.google.com" ,"googlevideo.com" , $sources); 
  	ob_start();
 print_r($sources, false);
