@@ -1,6 +1,6 @@
 <?php
 // insert your full URL here with http://
-$domain = "https://api.animedoodee.com";
+$domain = "";
 // SERVERS START 
 $proxies = array(); 
 //1stproxylist
