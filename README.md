@@ -1,4 +1,4 @@
-# JwPlayer-for-drivestream
+# JwPlayer-for-drivestream (iOS , mac ,Safari .... Not Working)
 Direct Google Drive Video
 ex. https://drive.google.com/file/d/13uxUht2Wq2DgM1O2Zzkq2W10A42H64rf/view
 is ID 0B6Z38PT2eRp8Ti1lTlNXUGpZWVk
